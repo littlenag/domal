@@ -1,9 +1,10 @@
-package com.irksomeideas.domal;
+package com.irksomeideas.domal.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.integration.annotation.ServiceActivator;
+
 
 public class Persist {
  

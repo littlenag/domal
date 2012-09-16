@@ -1,9 +1,11 @@
-package com.irksomeideas.domal;
+package com.irksomeideas.domal.collector;
 
 import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+
+import com.irksomeideas.domal.model.Metric;
 
 public class SnmpCollector {
   

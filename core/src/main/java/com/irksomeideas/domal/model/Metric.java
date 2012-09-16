@@ -1,4 +1,4 @@
-package com.irksomeideas.domal;
+package com.irksomeideas.domal.model;
 
 import org.joda.time.DateTime;
 
