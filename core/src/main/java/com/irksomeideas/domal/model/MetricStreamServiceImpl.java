@@ -18,10 +18,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
-import com.irksomeideas.domal.model.Issue.IssuePriority;
-import com.irksomeideas.domal.model.Issue.IssueStatus;
-
-public class TrackingServiceStub implements TrackingService {
+public class MetricStreamServiceImpl implements MetricStreamService {
 
     // You add a project by adding an entry with an empty observable array list
     // of issue IDs in the projects Map.
@@ -51,16 +48,12 @@ public class TrackingServiceStub implements TrackingService {
     }
 
     // A Issue stub.
-    public final class IssueStub implements ObservableIssue {
+    public final class IssueStub implements ObservableMetricStream {
         private final SimpleLongProperty creationTime;
         private final SimpleStringProperty id;
         private final SimpleStringProperty projectName;
         private final SimpleStringProperty title;
         private final SimpleStringProperty description;
-        private final SimpleObjectProperty<IssueStatus> status =
-                new SimpleObjectProperty<IssueStatus>(IssueStatus.NEW);
-        private final SimpleObjectProperty<IssuePriority> priority =
-                new SimpleObjectProperty<IssuePriority>(IssuePriority.MEDIUM);
 
         IssueStub(String projectName, String id) {
             this(projectName, id, null);
@@ -82,27 +75,17 @@ public class TrackingServiceStub implements TrackingService {
         }
 
         @Override
-        public IssueStatus getStatus() {
-            return status.get();
-        }
-
-        @Override
-        public IssuePriority getPriority() {
-            return priority.get();
-        }
-
-        @Override
         public String getId() {
             return id.get();
         }
 
         @Override
-        public String getProjectName() {
+        public String getDeviceName() {
             return projectName.get();
         }
 
         @Override
-        public String getSynopsis() {
+        public String getMetricName() {
             return title.get();
         }
 
@@ -111,20 +94,12 @@ public class TrackingServiceStub implements TrackingService {
         }
 
         @Override
-        public String getDescription() {
+        public String getUnits() {
             return description.get();
         }
 
         private void setDescription(String description) {
             this.description.set(description);
-        }
-
-        private void setPriority(IssuePriority issuePriority) {
-            this.priority.set(issuePriority);
-        }
-
-        private void setStatus(IssueStatus issueStatus) {
-            this.status.set(issueStatus);
         }
 
         @Override
@@ -138,18 +113,8 @@ public class TrackingServiceStub implements TrackingService {
         }
 
         @Override
-        public ObservableValue<String> projectNameProperty() {
+        public ObservableValue<String> deviceNameProperty() {
             return projectName;
-        }
-
-        @Override
-        public ObservableValue<IssueStatus> statusProperty() {
-            return status;
-        }
-
-        @Override
-        public ObservableValue<IssuePriority> priorityProperty() {
-            return priority;
         }
 
         @Override
@@ -172,11 +137,11 @@ public class TrackingServiceStub implements TrackingService {
         public void onChanged(Change<? extends String, ? extends IssueStub> change) {
             if (change.wasAdded()) {
                 final IssueStub val = change.getValueAdded();
-                projectsMap.get(val.getProjectName()).add(val.getId());
+                projectsMap.get(val.getDeviceName()).add(val.getId());
             }
             if (change.wasRemoved()) {
                 final IssueStub val = change.getValueRemoved();
-                projectsMap.get(val.getProjectName()).remove(val.getId());
+                projectsMap.get(val.getDeviceName()).remove(val.getId());
             }
         }
     };
@@ -187,77 +152,24 @@ public class TrackingServiceStub implements TrackingService {
         final Map<String, IssueStub> map = new TreeMap<String, IssueStub>();
         issuesMap = FXCollections.observableMap(map);
         issuesMap.addListener(issuesMapChangeListener);
-        IssueStub ts;
-        ts = createIssueFor("Project1");
-        ts.setSynopsis("We rode in sorrow, with strong hounds three");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project1");
-        ts.setSynopsis("Bran, Sgeolan, and Lomair");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project2");
-        ts.setSynopsis("On a morning misty and mild and fair");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project4");
-        ts.setSynopsis("The mist-drops hung on the fragrant trees");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project3");
-        ts.setSynopsis("And in the blossoms hung the bees");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project2");
-        ts.setSynopsis("We rode in sadness above Lough Lean");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project1");
-        ts.setSynopsis("For our best were dead on Gavra's green");
-        ts.setDescription("From \"The Wanderings Of Oisin\".\nW. B. Yeats.");
-        ts = createIssueFor("Project4");
-        ts.setSynopsis("The Wanderings of Oisin");
-        ts.setDescription("William Butler Yeats.");
     }
 
     private static <T> List<T> newList(T... items) {
         return Arrays.asList(items);
     }
 
-
     @Override
-    public IssueStub createIssueFor(String projectName) {
-        assert projectNames.contains(projectName);
-        final IssueStub issue = new IssueStub(projectName, "TT-"+issueCounter.incrementAndGet());
-        assert issuesMap.containsKey(issue.getId()) == false;
-        assert projectsMap.get(projectName).contains(issue.getId()) == false;
-        issuesMap.put(issue.getId(), issue);
-        return issue;
-    }
-
-    @Override
-    public void deleteIssue(String issueId) {
-        assert issuesMap.containsKey(issueId);
-        issuesMap.remove(issueId);
-    }
-
-    @Override
-    public ObservableList<String> getProjectNames() {
+    public ObservableList<String> getDeviceNames() {
         return projectNames;
     }
 
     @Override
-    public ObservableList<String> getIssueIds(String projectName) {
+    public ObservableList<String> getMetricStreamIds(String projectName) {
         return projectsMap.get(projectName);
     }
 
     @Override
-    public IssueStub getIssue(String issueId) {
+    public IssueStub getMetricStream(String issueId) {
         return issuesMap.get(issueId);
     }
-
-    @Override
-    public void saveIssue(String issueId, IssueStatus status,
-            IssuePriority priority, String synopsis, String description) {
-        IssueStub issue = getIssue(issueId);
-        issue.setDescription(description);
-        issue.setSynopsis(synopsis);
-        issue.setPriority(priority);
-        issue.setStatus(status);
-    }
-
 }

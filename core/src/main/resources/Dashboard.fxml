@@ -3,6 +3,8 @@
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -27,56 +29,27 @@
                   <children>
                     <TableView fx:id="table" minHeight="182.0" minWidth="596.0" prefHeight="182.0" prefWidth="596.0" styleClass="bugsTable" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="1.0">
                       <columns>
-                        <TableColumn maxWidth="500.0" minWidth="50.0" prefWidth="50.0" text="Name" fx:id="colName" />
-                        <TableColumn maxWidth="1300.0" minWidth="130.0" prefWidth="130.0" text="Date" fx:id="colDate" />
-                        <TableColumn maxWidth="700.0" minWidth="70.0" prefWidth="70.0" text="Priority" fx:id="colPriority" />
-                        <TableColumn maxWidth="500.0" minWidth="50.0" prefWidth="50.0" text="Status" fx:id="colStatus" />
-                        <TableColumn maxWidth="2500.0" minWidth="250.0" prefWidth="250.0" text="Synopsis" fx:id="colSynopsis" />
+                        <TableColumn maxWidth="500.0" minWidth="150.0" prefWidth="150.0" text="Metric Name" fx:id="colMetricName" />
+                        <TableColumn maxWidth="1300.0" minWidth="130.0" prefWidth="130.0" text="Units" fx:id="colUnits" />
+                        <TableColumn maxWidth="1300.0" minWidth="130.0" prefWidth="130.0" text="Tags" fx:id="colTags" />
                       </columns>
                     </TableView>
                   </children>
                 </AnchorPane>
                 <AnchorPane fx:id="details" minHeight="360.0" minWidth="350.0" prefHeight="360.0" prefWidth="350.0">
                   <children>
-                    <AnchorPane id="activityArea" minHeight="49.99987793" minWidth="573.0" prefHeight="49.99997793" prefWidth="573.0" styleClass="roundedAnchorPane" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                      <children>
-                        <Label id="activityLabel" styleClass="propLabel" text="ACTIVITY" AnchorPane.leftAnchor="11.0" AnchorPane.topAnchor="4.0" />
-                        <TextField fx:id="activityField" editable="false" layoutY="18.0" styleClass="descriptionValue" AnchorPane.leftAnchor="17.6" AnchorPane.rightAnchor="22.6" />
-                      </children>
-                    </AnchorPane>
-                    <AnchorPane fx:id="descriptionArea" minHeight="146.0" minWidth="385.0" prefHeight="158.0" prefWidth="392.0" styleClass="roundedAnchorPane" AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="201.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="121.0">
-                      <children>
-                        <Label id="descriptionLabel" layoutX="10.0" layoutY="8.0" styleClass="propLabel" text="DESCRIPTION" />
-                        <TextArea fx:id="descriptionValue" minHeight="118.0" minWidth="374.19" prefHeight="127.0" prefWidth="374.19" styleClass="descriptionValue" text="TextArea" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="12.81" AnchorPane.topAnchor="20.0" />
-                      </children>
-                    </AnchorPane>
-                    <AnchorPane id="propertyArea" minHeight="158.0" minWidth="156.0" prefHeight="150.0" prefWidth="160.0" styleClass="roundedAnchorPane" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="121.0">
-                      <children>
-                        <TextField fx:id="creationTimeValue" editable="false" layoutX="13.0" layoutY="128.0" minWidth="-Infinity" prefWidth="142.0" styleClass="propTextField" text="Creation time" />
-                        <Label id="creationTimeLabel" contentDisplay="TOP" layoutY="111.0" styleClass="propLabel" text="CREATED" AnchorPane.leftAnchor="11.0" />
-                        <Line id="Line" endX="60.0" layoutX="100.0" layoutY="101.0" startX="-100.0" styleClass="dividerLines">
-                          <stroke>
-                            <Color blue="0.400" green="0.400" red="0.400" fx:id="x1" />
-                          </stroke>
-                        </Line>
-                        <TextField fx:id="statusValue" editable="false" layoutY="76.0" minWidth="-Infinity" prefWidth="142.0" styleClass="propTextField" text="Status" AnchorPane.leftAnchor="12.0" />
-                        <Label id="statusLabel" layoutY="62.0" styleClass="propLabel" text="STATUS" AnchorPane.leftAnchor="11.0" />
-                        <Line id="Line" endX="60.0" layoutX="100.0" layoutY="51.0" startX="-100.0" stroke="$x1" styleClass="dividerLines" />
-                        <TextField fx:id="priorityValue" editable="false" layoutY="26.0" minWidth="-Infinity" prefWidth="142.0" styleClass="propTextField" text="Priority" AnchorPane.leftAnchor="12.0" />
-                        <Label id="priorityLabel" layoutY="12.0" styleClass="propLabel" text="PRIORITY" AnchorPane.leftAnchor="11.0" />
-                      </children>
-                    </AnchorPane>
-                    <TextField fx:id="synopsis" minWidth="573.0" prefHeight="38.0" prefWidth="573.0" styleClass="synopsisField" text="Synopsis" AnchorPane.leftAnchor="19.5" AnchorPane.rightAnchor="20.5" AnchorPane.topAnchor="77.0" />
-                    <AnchorPane fx:id="titleLine" layoutY="13.0" minHeight="57.0" minWidth="573.0" prefHeight="57.0" prefWidth="573.0" styleClass="roundedAnchorPane" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                      <children>
-                        <Label id="Label" layoutX="11.0" layoutY="9.0" styleClass="propLabel" text="PROJECT / ID" />
-                        <HBox id="HBox" alignment="CENTER" layoutX="13.0" layoutY="27.0" spacing="5.0">
-                          <children>
-                            <Label id="Label" fx:id="displayedIssueLabel" text="Project / Bug ID" />
-                          </children>
-                        </HBox>
-                      </children>
-                    </AnchorPane>
+                    <LineChart id="LineChart" fx:id="chart" layoutX="43.0" layoutY="38.0" prefHeight="290.0" prefWidth="527.0" title="">
+                      <xAxis>
+                        <CategoryAxis side="BOTTOM">
+                          <categories>
+                            <FXCollections fx:factory="observableArrayList" />
+                          </categories>
+                        </CategoryAxis>
+                      </xAxis>
+                      <yAxis>
+                        <NumberAxis side="LEFT" />
+                      </yAxis>
+                    </LineChart>
                   </children>
                 </AnchorPane>
               </items>
@@ -95,13 +68,7 @@
               </image>
             </ImageView>
             <Label fx:id="messageBar" maxHeight="-Infinity" minHeight="-Infinity" minWidth="269.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-            <HBox id="HBox" alignment="CENTER" fillHeight="false" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
-              <children>
-                <Button fx:id="newIssue" alignment="CENTER" minWidth="62.0" onAction="#newIssueFired" prefHeight="25.0" prefWidth="66.0" styleClass="roundedButton" text="New" textOverrun="CLIP" />
-                <Button fx:id="saveIssue" alignment="CENTER" minWidth="62.0" onAction="#saveIssueFired" prefHeight="25.0" prefWidth="66.0" styleClass="roundedButton" text="Save" />
-                <Button fx:id="deleteIssue" alignment="CENTER" minWidth="62.0" onAction="#deleteIssueFired" prefHeight="25.0" prefWidth="66.0" styleClass="roundedButton" text="Delete" />
-              </children>
-            </HBox>
+            <HBox id="HBox" alignment="CENTER" fillHeight="false" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="0" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="NEVER" minWidth="10.0" />

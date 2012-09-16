@@ -30,6 +30,14 @@ public class Metric {
   public Double value;
   public DateTime timestamp;
   
+  /**
+   * other properties
+   * universe id
+   * tags & k/v pairs (e.g. S=foo P=bar C=baz)
+   * units
+   * scale factor
+   */
+  
   @Override
   public String toString() {
     return name + "#" + value;

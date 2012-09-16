@@ -5,13 +5,11 @@ package com.irksomeideas.domal.model;
 
 import javafx.beans.value.ObservableValue;
 
-public interface ObservableIssue extends Issue {
+public interface ObservableMetricStream extends MetricStream {
 
     public ObservableValue<Number> dateProperty();
     public ObservableValue<String> idProperty();
-    public ObservableValue<String> projectNameProperty();
-    public ObservableValue<IssueStatus> statusProperty();
-    public ObservableValue<IssuePriority> priorityProperty();
+    public ObservableValue<String> deviceNameProperty();
     public ObservableValue<String> synopsisProperty();
     public ObservableValue<String> descriptionProperty();
 }
