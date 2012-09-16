@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="collector" class="ht.core.SnmpCollector" init-method="init">
+    <property name="db" ref="db"/>
+  </bean>
+
+  <bean id="db" class="ht.core.Persist" init-method="init"/>
+  
+  <bean id="printer" class="ht.core.PrintMetrics" init-method="init">
+    <property name="db" ref="db"/>
+  </bean>
+  
+</beans>
