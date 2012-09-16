@@ -3,6 +3,7 @@ package com.irksomeideas.domal;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 public class SnmpCollector {
   
@@ -17,6 +18,7 @@ public class SnmpCollector {
     Metric m = new Metric();
     m.name = "cpu-load";
     m.value = r.nextDouble();
+    m.timestamp = new DateTime();
     return m;
   }
 }

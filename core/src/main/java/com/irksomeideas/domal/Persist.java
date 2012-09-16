@@ -3,7 +3,7 @@ package com.irksomeideas.domal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.integration.annotation.Transformer;
+import org.springframework.integration.annotation.ServiceActivator;
 
 public class Persist {
  
@@ -13,14 +13,13 @@ public class Persist {
     handlers.add(handler);
   }
   
-  @Transformer
-  public Metric persistMetric(Metric m) {
+  @ServiceActivator
+  public void persistMetric(Metric m) {
     // TODO save in a hash map
     
     // TODO write a notification engine. Notify subscribers that a new metric has arrived.
     for (MetricHandler handler : handlers) {
       handler.handleMetric(m);
     }
-    return m;
   }
 }

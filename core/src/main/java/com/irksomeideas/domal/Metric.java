@@ -1,5 +1,7 @@
 package com.irksomeideas.domal;
 
+import org.joda.time.DateTime;
+
 /**
  * A single collected instance of a metric
  * Metrics form a stream over which analytics can be run
@@ -26,6 +28,7 @@ public class Metric {
   
   public String name;
   public Double value;
+  public DateTime timestamp;
   
   @Override
   public String toString() {
