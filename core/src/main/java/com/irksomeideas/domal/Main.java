@@ -15,8 +15,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main extends Application {
   
+  private static Persist persist;
+  
+  public void setDb(Persist p) {
+    persist = p;
+  }
+  
   public static void main(String[] args) {
     ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/spring/**/*.xml");
+    persist = (Persist)context.getBean("db");
     launch(args);
   }
   
@@ -25,32 +32,45 @@ public class Main extends Application {
     // TODO Cleanly exit when we close the window. Will want to turn into a background
     // daemon later.
     System.exit(0);
-  }  
+  }
+  
+  private Stage primaryStage;
+  
+  public Stage getPrimaryStage() {
+    return primaryStage;
+  }
+  
+  private XYChart.Series<Number,Number> hourDataSeries;
   
   @Override
   public void start(Stage primaryStage) throws Exception {
     Group root = new Group();
-    primaryStage.setScene(new Scene(root));
+    this.primaryStage = primaryStage;
+    this.primaryStage.setScene(new Scene(root));
     NumberAxis timeAxis = new NumberAxis();
     timeAxis.setLabel("Time");
     NumberAxis dataAxis = new NumberAxis();
-    // Would be the reported units
+    // label would be the reported units
     dataAxis.setLabel("Load");
+ 
+    LineChart chart = new LineChart(timeAxis, dataAxis);
     
-    ObservableList<XYChart.Series<Double,Double>> chartData = FXCollections.observableArrayList(
-        // Name would be the metric name, or maybe sensor name / metric name
-        new LineChart.Series<Double,Double>("15 minute load", FXCollections.observableArrayList(
-            new XYChart.Data<Double,Double>(0.0, 1.0),
-            new XYChart.Data<Double,Double>(1.2, 1.4),
-            new XYChart.Data<Double,Double>(2.2, 1.9),
-            new XYChart.Data<Double,Double>(2.7, 2.3),
-            new XYChart.Data<Double,Double>(2.9, 0.5)
-        ))
-    );
+    hourDataSeries = new XYChart.Series<Number,Number>();
+    hourDataSeries.setName("15 minute load");
     
-    LineChart chart = new LineChart(timeAxis, dataAxis, chartData);
+    chart.getData().add(hourDataSeries);
+        
+    persist.addMetricHandler(new MetricHandler() {      
+      int ticks = 0;
+      @Override
+      public void handleMetric(Metric m) {
+        System.out.println("Got metric.");
+        hourDataSeries.getData().add(new XYChart.Data<Number, Number>(ticks++, m.value));
+      }
+    });
+    
     root.getChildren().add(chart);
-    primaryStage.show();
+    this.primaryStage.show();
   }
 
 }
