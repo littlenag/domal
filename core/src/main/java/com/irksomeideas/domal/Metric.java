@@ -1,4 +1,4 @@
-package ht.core;
+package com.irksomeideas.domal;
 
 /**
  * A single collected instance of a metric

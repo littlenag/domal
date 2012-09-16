@@ -1,4 +1,4 @@
-package ht.core;
+package com.irksomeideas.domal;
 
 import javax.annotation.PostConstruct;
 

@@ -1,4 +1,4 @@
-package ht.core;
+package com.irksomeideas.domal;
 
 import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
