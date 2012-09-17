@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,14 +19,14 @@ import javafx.collections.ObservableMap;
 
 public class MetricStreamServiceImpl implements MetricStreamService {
 
-    // You add a project by adding an entry with an empty observable array list
+    // You add a device by adding an entry with an empty observable array list
     // of issue IDs in the projects Map.
-    final ObservableMap<String, ObservableList<String>> projectsMap;
+    final ObservableMap<String, ObservableList<String>> devicesMap;
     {
         final Map<String, ObservableList<String>> map = new TreeMap<String, ObservableList<String>>();
-        projectsMap = FXCollections.observableMap(map);
-        for (String s : newList("Project1", "Project2", "Project3", "Project4")) {
-            projectsMap.put(s, FXCollections.<String>observableArrayList());
+        devicesMap = FXCollections.observableMap(map);
+        for (String s : newList("domal", "router", "raid", "vm-host", "vm-1")) {
+            devicesMap.put(s, FXCollections.<String>observableArrayList());
         }
     }
 
@@ -36,15 +35,16 @@ public class MetricStreamServiceImpl implements MetricStreamService {
     final MapChangeListener<String, ObservableList<String>> projectsMapChangeListener = new MapChangeListener<String, ObservableList<String>>() {
         @Override
         public void onChanged(Change<? extends String, ? extends ObservableList<String>> change) {
-            if (change.wasAdded()) projectNames.add(change.getKey());
-            if (change.wasRemoved()) projectNames.remove(change.getKey());
+            if (change.wasAdded()) deviceNames.add(change.getKey());
+            if (change.wasRemoved()) deviceNames.remove(change.getKey());
         }
     };
-    final ObservableList<String> projectNames;
+    
+    final ObservableList<String> deviceNames;
     {
-        projectNames = FXCollections.<String>observableArrayList();
-        projectNames.addAll(projectsMap.keySet());
-        projectsMap.addListener(projectsMapChangeListener);
+        deviceNames = FXCollections.<String>observableArrayList();
+        deviceNames.addAll(devicesMap.keySet());
+        devicesMap.addListener(projectsMapChangeListener);
     }
 
     // A Issue stub.
@@ -59,8 +59,8 @@ public class MetricStreamServiceImpl implements MetricStreamService {
             this(projectName, id, null);
         }
         IssueStub(String projectName, String id, String title) {
-            assert projectNames.contains(projectName);
-            assert ! projectsMap.get(projectName).contains(id);
+            assert deviceNames.contains(projectName);
+            assert ! devicesMap.get(projectName).contains(id);
             assert ! issuesMap.containsKey(id);
             this.projectName = new SimpleStringProperty(projectName);
             this.id = new SimpleStringProperty(id);
@@ -89,17 +89,9 @@ public class MetricStreamServiceImpl implements MetricStreamService {
             return title.get();
         }
 
-        private void setSynopsis(String title) {
-            this.title.set(title);
-        }
-
         @Override
         public String getUnits() {
             return description.get();
-        }
-
-        private void setDescription(String description) {
-            this.description.set(description);
         }
 
         @Override
@@ -137,11 +129,11 @@ public class MetricStreamServiceImpl implements MetricStreamService {
         public void onChanged(Change<? extends String, ? extends IssueStub> change) {
             if (change.wasAdded()) {
                 final IssueStub val = change.getValueAdded();
-                projectsMap.get(val.getDeviceName()).add(val.getId());
+                devicesMap.get(val.getDeviceName()).add(val.getId());
             }
             if (change.wasRemoved()) {
                 final IssueStub val = change.getValueRemoved();
-                projectsMap.get(val.getDeviceName()).remove(val.getId());
+                devicesMap.get(val.getDeviceName()).remove(val.getId());
             }
         }
     };
@@ -160,12 +152,12 @@ public class MetricStreamServiceImpl implements MetricStreamService {
 
     @Override
     public ObservableList<String> getDeviceNames() {
-        return projectNames;
+        return deviceNames;
     }
 
     @Override
     public ObservableList<String> getMetricStreamIds(String projectName) {
-        return projectsMap.get(projectName);
+        return devicesMap.get(projectName);
     }
 
     @Override

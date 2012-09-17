@@ -53,8 +53,8 @@ public class DashboardController implements Initializable {
     private String displayedBugProject; // the name of the project of the bug displayed in the details section.
     
     @FXML
-    Label displayedIssueLabel; // the displayedIssueLabel will contain a concatenation
-                               // of the project name and the bug id.
+    Label displayedMetricStreamLabel; // a concatenation of the device and metric names
+    
     @FXML
     AnchorPane details;
     
@@ -73,7 +73,7 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rsrcs) {
         assert details != null : "fx:id=\"details\" was not injected: check your FXML file 'IssueTracking.fxml'.";
-        assert displayedIssueLabel != null : "fx:id=\"displayedIssueLabel\" was not injected: check your FXML file 'IssueTracking.fxml'.";
+        assert displayedMetricStreamLabel != null : "fx:id=\"displayedIssueLabel\" was not injected: check your FXML file 'IssueTracking.fxml'.";
         assert messageBar != null : "fx:id=\"messageBar\" was not injected: check your FXML file 'IssueTracking.fxml'.";
         assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'IssueTracking.fxml'.";
         assert list != null : "fx:id=\"list\" was not injected: check your FXML file 'IssueTracking.fxml'.";
@@ -83,8 +83,8 @@ public class DashboardController implements Initializable {
         connectToService();
         if (list != null) {
             list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-            list.getSelectionModel().selectedItemProperty().addListener(projectItemSelected);
-            displayedProjectNames.addListener(projectNamesListener);
+            list.getSelectionModel().selectedItemProperty().addListener(deviceSelected);
+            displayedDevices.addListener(projectNamesListener);
         }
     }
 
@@ -117,13 +117,13 @@ public class DashboardController implements Initializable {
     // An observable list of project names obtained from the model.
     // This is a live list, and we will react to its changes by removing
     // and adding project names to/from our list widget.
-    private ObservableList<String> displayedProjectNames;
+    private ObservableList<String> displayedDevices;
     
     // The list of Issue IDs relevant to the selected project. Can be null
     // if no project is selected. This list is obtained from the model.
     // This is a live list, and we will react to its changes by removing
     // and adding Issue objects to/from our table widget.
-    private ObservableList<String> displayedIssues;
+    private ObservableList<String> displayedMetricStreams;
     
     // This listener will listen to changes in the displayedProjectNames list,
     // and update our list widget in consequence.
@@ -150,9 +150,9 @@ public class DashboardController implements Initializable {
         }
     };
     
-    // This listener will listen to changes in the displayedIssues list,
-    // and update our table widget in consequence.
-    private final ListChangeListener<String> projectIssuesListener = new ListChangeListener<String>() {
+    // This listener will listen to changes in the devices list,
+    // and update our table of metric streams in consequence.
+    private final ListChangeListener<String> devicesListener = new ListChangeListener<String>() {
 
         @Override
         public void onChanged(Change<? extends String> c) {
@@ -193,10 +193,10 @@ public class DashboardController implements Initializable {
     private void connectToService() {
         if (model == null) {
             model = new MetricStreamServiceImpl();
-            displayedProjectNames = model.getDeviceNames();
+            displayedDevices = model.getDeviceNames();
         }
         projectsView.clear();
-        List<String> sortedProjects = new ArrayList<String>(displayedProjectNames);
+        List<String> sortedProjects = new ArrayList<String>(displayedDevices);
         Collections.sort(sortedProjects);
         projectsView.addAll(sortedProjects);
         list.setItems(projectsView);
@@ -220,13 +220,13 @@ public class DashboardController implements Initializable {
     private void updateBugDetails() {
         final ObservableMetricStream selectedIssue = getSelectedIssue();
         if (details != null && selectedIssue != null) {
-            if (displayedIssueLabel != null) {
+            if (displayedMetricStreamLabel != null) {
                 displayedBugId = selectedIssue.getId();
                 displayedBugProject = selectedIssue.getDeviceName();
-                displayedIssueLabel.setText( displayedBugId + " / " + displayedBugProject );
+                displayedMetricStreamLabel.setText( displayedBugId + " / " + displayedBugProject );
             }
         } else {
-            displayedIssueLabel.setText("");
+            displayedMetricStreamLabel.setText("");
             displayedBugId = null;
             displayedBugProject = null;
         }
@@ -305,35 +305,35 @@ public class DashboardController implements Initializable {
      * Listen to changes in the list selection, and updates the table widget and
      * DeleteIssue and NewIssue buttons accordingly.
      */
-    private final ChangeListener<String> projectItemSelected = new ChangeListener<String>() {
+    private final ChangeListener<String> deviceSelected = new ChangeListener<String>() {
 
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            projectUnselected(oldValue);
-            projectSelected(newValue);
+            deviceUnselected(oldValue);
+            deviceSelected(newValue);
         }
     };
 
     // Called when a project is unselected.
-    private void projectUnselected(String oldProjectName) {
-        if (oldProjectName != null) {
-            displayedIssues.removeListener(projectIssuesListener);
-            displayedIssues = null;
+    private void deviceUnselected(String oldDeviceName) {
+        if (oldDeviceName != null) {
+            displayedMetricStreams.removeListener(devicesListener);
+            displayedMetricStreams = null;
             table.getSelectionModel().clearSelection();
             table.getItems().clear();
         }
     }
 
     // Called when a project is selected.
-    private void projectSelected(String newProjectName) {
-        if (newProjectName != null) {
+    private void deviceSelected(String newDeviceName) {
+        if (newDeviceName != null) {
             table.getItems().clear();
-            displayedIssues = model.getMetricStreamIds(newProjectName);
-            for (String id : displayedIssues) {
-                final ObservableMetricStream issue = model.getMetricStream(id);
-                table.getItems().add(issue);
+            displayedMetricStreams = model.getMetricStreamIds(newDeviceName);
+            for (String id : displayedMetricStreams) {
+                final ObservableMetricStream stream = model.getMetricStream(id);
+                table.getItems().add(stream);
             }
-            displayedIssues.addListener(projectIssuesListener);
+            displayedMetricStreams.addListener(devicesListener);
         }
     }
 }
