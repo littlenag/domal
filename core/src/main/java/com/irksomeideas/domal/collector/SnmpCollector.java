@@ -18,7 +18,7 @@ public class SnmpCollector {
   public Metric getNextMetric() {
     final Random r = new Random();
     Metric m = new Metric();
-    m.name = "cpu-load";
+    m.metricName = "cpu-load";
     m.value = r.nextDouble();
     m.timestamp = new DateTime();
     return m;

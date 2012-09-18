@@ -9,14 +9,14 @@
     http://www.springframework.org/schema/integration/spring-integration.xsd">
 
   <bean id="collector" class="com.irksomeideas.domal.collector.SnmpCollector"/>
-  <bean id="persist" class="com.irksomeideas.domal.model.Persist"/>
+  <bean id="modelService" class="com.irksomeideas.domal.model.MetricStreamServiceImpl"/>
 
   <int:inbound-channel-adapter ref="collector" method="getNextMetric" channel="metrics">
     <int:poller fixed-rate="2000" max-messages-per-poll="1"/>
   </int:inbound-channel-adapter>
   
-  <int:channel id="metrics"/>
+  <int:channel id="metricsChannel"/>
   
-  <int:service-activator ref="persist" input-channel="metrics"/>
+  <int:service-activator ref="modelService" input-channel="metrics"/>
   
 </beans>

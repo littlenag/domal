@@ -26,7 +26,8 @@ import org.joda.time.DateTime;
  */
 public class Metric {
   
-  public String name;
+  public String deviceName;     // device that generated this metric
+  public String metricName;     // name of this metric
   public Double value;
   public DateTime timestamp;
   
@@ -40,7 +41,7 @@ public class Metric {
   
   @Override
   public String toString() {
-    return name + "#" + value;
+    return deviceName + "/" + metricName + "#" + value;
   }
 
 }

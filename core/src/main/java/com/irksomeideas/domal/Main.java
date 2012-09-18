@@ -1,7 +1,5 @@
 package com.irksomeideas.domal;
 
-import java.util.ResourceBundle;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,14 +15,14 @@ public class Main extends Application {
   private Logger logger = Logger.getLogger(Main.class);
   
   public static void main(String[] args) {
-    //ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/spring/**/*.xml");
     Application.launch(Main.class, (java.lang.String[])null);
   }
   
   @Override
   public void start(Stage primaryStage) {
       try {
-          System.out.println("started");
+          ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/spring/**/*.xml");
+          System.out.println("Domal has started");
           AnchorPane page = (AnchorPane) FXMLLoader.load(Main.class.getResource("/Dashboard.fxml"));
           Scene scene = new Scene(page);
           primaryStage.setScene(scene);
