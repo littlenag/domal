@@ -14,5 +14,5 @@ public interface MetricStreamService {
   public ObservableList<String> getMetricStreamIds(String deviceName);
   
   // get a single metric stream
-  public ObservableMetricStream getMetricStream(String metricStreamId);
+  public Metric getMetricStream(String metricStreamId);
 }

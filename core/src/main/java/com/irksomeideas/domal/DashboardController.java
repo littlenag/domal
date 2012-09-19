@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ChangeListener;
@@ -31,22 +30,21 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
+import com.irksomeideas.domal.model.Metric;
 import com.irksomeideas.domal.model.MetricStreamService;
-import com.irksomeideas.domal.model.MetricStreamServiceImpl;
-import com.irksomeideas.domal.model.ObservableMetricStream;
 
-public class DashboardController implements Initializable {
+public class DashboardController implements Initializable  {
   
   private Logger logger = Logger.getLogger(DashboardController.class);
 
   @FXML
-  TableView<ObservableMetricStream> table;
+  TableView<Metric> table;
   @FXML
-  TableColumn<ObservableMetricStream, String> colMetricName;
+  TableColumn<Metric, String> colMetricName;
   @FXML
-  TableColumn<ObservableMetricStream, String> colUnits;
+  TableColumn<Metric, String> colUnits;
   @FXML
-  TableColumn<ObservableMetricStream, String> colTags;
+  TableColumn<Metric, String> colTags;
 
   @FXML
   ListView<String> list;
@@ -70,10 +68,13 @@ public class DashboardController implements Initializable {
 
   ObservableList<String> devicesView = FXCollections.observableArrayList();
 
-  @Autowired
   MetricStreamService model;
 
-  final ObservableList<ObservableMetricStream> tableContent = FXCollections.observableArrayList();
+  final ObservableList<Metric> tableContent = FXCollections.observableArrayList();
+  
+  public void setModelService(MetricStreamService modelService) {
+    this.model = modelService;
+  }
 
   /**
    * Initializes the controller class.
@@ -175,14 +176,14 @@ public class DashboardController implements Initializable {
         }
         if (c.wasRemoved() || c.wasReplaced()) {
           for (String p : c.getRemoved()) {
-            ObservableMetricStream removed = null;
+            Metric removed = null;
             // Issue already removed:
             // we can't use model.getIssue(issueId) to get it.
             // we need to loop over the table content instead.
             // Then we need to remove it - but outside of the for loop
             // to avoid ConcurrentModificationExceptions.
-            for (ObservableMetricStream t : table.getItems()) {
-              if (t.getMetricName().equals(p)) {
+            for (Metric t : table.getItems()) {
+              if (t.metricName.equals(p)) {
                 removed = t;
                 break;
               }
@@ -209,10 +210,10 @@ public class DashboardController implements Initializable {
 
   // This listener listen to changes in the table widget selection and
   // update the DeleteIssue button state accordingly.
-  private final ListChangeListener<ObservableMetricStream> tableSelectionChanged = new ListChangeListener<ObservableMetricStream>() {
+  private final ListChangeListener<Metric> tableSelectionChanged = new ListChangeListener<Metric>() {
 
     @Override
-    public void onChanged(Change<? extends ObservableMetricStream> c) {
+    public void onChanged(Change<? extends Metric> c) {
       updateMetricStreamChart();
     }
   };
@@ -222,7 +223,7 @@ public class DashboardController implements Initializable {
   }
 
   private void updateMetricStreamChart() {
-    final ObservableMetricStream selectedMetricStream = getSelectedMetricStream();
+    final Metric selectedMetricStream = getSelectedMetricStream();
     if (details != null && selectedMetricStream != null) {
       if (displayedMetricStreamLabel != null) {
         displayedMetricStreamId = selectedMetricStream.getMetricName();
@@ -266,16 +267,16 @@ public class DashboardController implements Initializable {
   // Configure the table widget: set up its column, and register the
   // selection changed listener.
   private void configureMetricStreamTable() {
-    colMetricName.setCellValueFactory(new PropertyValueFactory<ObservableMetricStream, String>("id"));
-    colUnits.setCellValueFactory(new PropertyValueFactory<ObservableMetricStream, String>("units"));
-    colTags.setCellValueFactory(new PropertyValueFactory<ObservableMetricStream, String>("tags"));
+    colMetricName.setCellValueFactory(new PropertyValueFactory<Metric, String>("id"));
+    colUnits.setCellValueFactory(new PropertyValueFactory<Metric, String>("units"));
+    colTags.setCellValueFactory(new PropertyValueFactory<Metric, String>("tags"));
 
     table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
     table.setItems(tableContent);
     assert table.getItems() == tableContent;
 
-    final ObservableList<ObservableMetricStream> tableSelection = table.getSelectionModel().getSelectedItems();
+    final ObservableList<Metric> tableSelection = table.getSelectionModel().getSelectedItems();
 
     tableSelection.addListener(tableSelectionChanged);
   }
@@ -294,11 +295,11 @@ public class DashboardController implements Initializable {
     return null;
   }
 
-  public ObservableMetricStream getSelectedMetricStream() {
+  public Metric getSelectedMetricStream() {
     if (model != null && table != null) {
-      List<ObservableMetricStream> selectedIssues = table.getSelectionModel().getSelectedItems();
+      List<Metric> selectedIssues = table.getSelectionModel().getSelectedItems();
       if (selectedIssues.size() == 1) {
-        final ObservableMetricStream selectedIssue = selectedIssues.get(0);
+        final Metric selectedIssue = selectedIssues.get(0);
         return selectedIssue;
       }
     }
@@ -334,7 +335,7 @@ public class DashboardController implements Initializable {
       table.getItems().clear();
       displayedMetricStreams = model.getMetricStreamIds(newDeviceName);
       for (String id : displayedMetricStreams) {
-        final ObservableMetricStream stream = model.getMetricStream(id);
+        final Metric stream = model.getMetricStream(id);
         table.getItems().add(stream);
       }
       displayedMetricStreams.addListener(devicesListener);

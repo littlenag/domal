@@ -31,6 +31,14 @@ public class Metric {
   public Double value;
   public DateTime timestamp;
   
+  public String getMetricName() {
+    return metricName;
+  }
+  
+  public String getDeviceName() {
+    return deviceName;
+  }
+
   /**
    * other properties
    * universe id

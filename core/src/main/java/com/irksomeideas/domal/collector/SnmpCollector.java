@@ -19,6 +19,7 @@ public class SnmpCollector {
     final Random r = new Random();
     Metric m = new Metric();
     m.metricName = "cpu-load";
+    m.deviceName = "zenoss";
     m.value = r.nextDouble();
     m.timestamp = new DateTime();
     return m;

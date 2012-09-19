@@ -10,6 +10,10 @@
 
   <bean id="collector" class="com.irksomeideas.domal.collector.SnmpCollector"/>
   <bean id="modelService" class="com.irksomeideas.domal.model.MetricStreamServiceImpl"/>
+  
+  <bean id="controller" class="com.irksomeideas.domal.DashboardController">
+    <property name="modelService" ref="modelService"/>
+  </bean>
 
   <int:inbound-channel-adapter ref="collector" method="getNextMetric" channel="metrics">
     <int:poller fixed-rate="2000" max-messages-per-poll="1"/>
