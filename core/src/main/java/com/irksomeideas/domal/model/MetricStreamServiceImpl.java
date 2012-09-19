@@ -14,9 +14,6 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.integration.MessageChannel;
 import org.springframework.integration.annotation.ServiceActivator;
 
 public class MetricStreamServiceImpl implements MetricStreamService {
@@ -27,10 +24,6 @@ public class MetricStreamServiceImpl implements MetricStreamService {
   final ObservableMap<String, ObservableList<String>> devicesMap;
   final ObservableMap<String, MetricStreamStub> metricStreamsMap;
   
-  @Autowired
-  @Value("metricsChannel")
-  private MessageChannel metricsChannel;
-
   public MetricStreamServiceImpl() {
     devicesMap = FXCollections.observableMap(new TreeMap<String, ObservableList<String>>());
     deviceNames = FXCollections.<String> observableArrayList();
@@ -47,6 +40,10 @@ public class MetricStreamServiceImpl implements MetricStreamService {
     handlers.add(handler);
   }
   
+  /**
+   * This is the way that the model is told about new metrics.
+   * @param m
+   */
   @ServiceActivator
   public void persistMetric(Metric m) {
     if (!deviceNames.contains(m.deviceName)) {
