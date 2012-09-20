@@ -20,6 +20,7 @@ public class SpringFxmlLoader {
       Object instance = context.getBean(controllerClass);
       FXMLLoader loader = new FXMLLoader();
       loader.getNamespace().put("controller", instance);
+      loader.setController(instance);
       loader.setLocation(getClass().getResource(url));
       return loader.load(fxmlStream);
     } finally {

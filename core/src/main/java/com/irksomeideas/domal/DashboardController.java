@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
-
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +19,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
@@ -29,6 +28,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
+
+import org.apache.log4j.Logger;
 
 import com.irksomeideas.domal.model.Metric;
 import com.irksomeideas.domal.model.MetricStreamService;
@@ -51,11 +52,14 @@ public class DashboardController implements Initializable  {
 
   @FXML
   LineChart chart;
+  
+  @FXML
+  Button refreshButton;
 
-  private String displayedMetricStreamId;      // the id of the bug displayed in the details
-                                      // section.
-  private String displayedDeviceName; // the name of the project of the bug
-                                      // displayed in the details section.
+  private String displayedMetricStreamId;   // the id of the bug displayed in the details
+                                            // section.
+  private String displayedDeviceName;       // the name of the project of the bug
+                                            // displayed in the details section.
 
   @FXML
   Label displayedMetricStreamLabel; // a concatenation of the device and metric names
@@ -67,13 +71,26 @@ public class DashboardController implements Initializable  {
   Label messageBar;
 
   ObservableList<String> devicesView = FXCollections.observableArrayList();
+  
+  final ObservableList<Metric> tableContent = FXCollections.observableArrayList();
 
   MetricStreamService model;
-
-  final ObservableList<Metric> tableContent = FXCollections.observableArrayList();
   
+  // So that Spring can inject the model
   public void setModelService(MetricStreamService modelService) {
     this.model = modelService;
+  }
+  
+  /**
+   * Called when the NewIssue button is fired.
+   *
+   * @param event the action event.
+   */
+  public void refreshButtonFired(ActionEvent event) {
+      if (model != null) {
+        model.refresh();
+        logger.info("refreshing devices list");
+      }
   }
 
   /**

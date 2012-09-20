@@ -15,4 +15,7 @@ public interface MetricStreamService {
   
   // get a single metric stream
   public Metric getMetricStream(String metricStreamId);
+
+  // refresh this client-side model from the server
+  public void refresh();
 }

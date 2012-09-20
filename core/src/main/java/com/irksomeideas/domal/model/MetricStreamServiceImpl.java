@@ -63,4 +63,10 @@ public class MetricStreamServiceImpl implements MetricStreamService {
   public Metric getMetricStream(String issueId) {
     return metricStreamsMap.get(issueId);
   }
+
+  @Override
+  public void refresh() {
+    // TODO Auto-generated method stub
+    
+  }
 }

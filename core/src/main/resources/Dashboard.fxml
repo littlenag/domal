@@ -19,6 +19,7 @@
         <AnchorPane id="AnchorPane" minHeight="50.0" minWidth="100.0" prefHeight="160.0" prefWidth="100.0" styleClass="vSplitPaneLeft">
           <children>
             <ListView fx:id="list" prefHeight="553.0" prefWidth="187.0" styleClass="blackList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button fx:id="refreshButton" layoutX="14.0" layoutY="518.0" mnemonicParsing="false" onAction="#refreshButtonFired" prefWidth="159.0" text="Refresh" />
           </children>
         </AnchorPane>
         <AnchorPane id="AnchorPane" minHeight="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -38,7 +39,7 @@
                 </AnchorPane>
                 <AnchorPane fx:id="details" minHeight="360.0" minWidth="350.0" prefHeight="360.0" prefWidth="350.0">
                   <children>
-                    <LineChart id="LineChart" fx:id="chart" layoutX="43.0" layoutY="38.0" prefHeight="290.0" prefWidth="527.0" title="">
+                    <LineChart fx:id="chart" layoutX="43.0" layoutY="38.0" prefHeight="290.0" prefWidth="527.0" title="">
                       <xAxis>
                         <CategoryAxis side="BOTTOM">
                           <categories>
