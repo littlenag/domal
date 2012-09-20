@@ -4,7 +4,9 @@
 package com.irksomeideas.domal.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
@@ -30,23 +32,42 @@ public class MetricStreamServiceImpl implements MetricStreamService {
     handlers.add(handler);
   }
   
+  // TODO replace this with a real db at some point
+  private Map<String, Map<String, List<Metric>>> dataPoints = new HashMap<String, Map<String, List<Metric>>>(); 
+  
   /**
    * This is the way that the model is told about new metrics.
    * @param m
    */
   @ServiceActivator
   public void persistMetric(Metric m) {
-    if (!deviceNames.contains(m.deviceName)) {
-      deviceNames.add(m.deviceName);
-      devicesMap.put(m.deviceName, FXCollections.observableList(new ArrayList<String>()));
+    if (!deviceNames.contains(m.getDeviceName())) {
+      deviceNames.add(m.getDeviceName());
+      devicesMap.put(m.getDeviceName(), FXCollections.observableList(new ArrayList<String>()));
       logger.info("Adding to devices list");
     }
     
-    if (!devicesMap.get(m.deviceName).contains(m.metricName)) {
-      devicesMap.get(m.deviceName).add(m.metricName);
-      metricStreamsMap.put(m.metricName, m);
+    if (!devicesMap.get(m.getDeviceName()).contains(m.getMetricName())) {
+      devicesMap.get(m.getDeviceName()).add(m.getMetricName());
+      metricStreamsMap.put(m.getMetricName(), m);
       logger.info("Adding to metric streams list");
     }
+    
+    Map<String, List<Metric>> deviceData = dataPoints.get(m.getDeviceName());
+    if (deviceData == null) {
+      deviceData = new HashMap<String, List<Metric>>();
+      dataPoints.put(m.getDeviceName(), deviceData);
+    }
+    
+    List<Metric> metricData = deviceData.get(m.getMetricName());
+    if (metricData == null) {
+      metricData = new ArrayList<Metric>();
+      deviceData.put(m.getMetricName(), metricData);
+    }
+    
+    // Finally append this new metric to the list
+    logger.info("Persist new metric from " + m + " at " + m.getTimestamp());
+    metricData.add(m);
   }
   
   @Override

@@ -26,10 +26,18 @@ import org.joda.time.DateTime;
  */
 public class Metric {
   
-  public String deviceName;     // device that generated this metric
-  public String metricName;     // name of this metric
-  public Double value;
-  public DateTime timestamp;
+  private String deviceName;       // device that generated this metric
+  private String metricName;       // name of this metric
+  private Double value;
+  private DateTime timestamp = new DateTime();
+  private String units = "%";      // reported units
+  private String tags = "rack=2";  // metadata about either the device or the stream itself
+  
+  public Metric(String device, String metric, Double value) {
+    this.deviceName = device;
+    this.metricName = metric;
+    this.value = value;
+  }
   
   public String getMetricName() {
     return metricName;
@@ -37,6 +45,22 @@ public class Metric {
   
   public String getDeviceName() {
     return deviceName;
+  }
+  
+  public Double getValue() {
+    return value;
+  }
+  
+  public DateTime getTimestamp() {
+    return timestamp;
+  }
+  
+  public String getUnits() {
+    return units;
+  }
+  
+  public String getTags() {
+    return tags;
   }
 
   /**

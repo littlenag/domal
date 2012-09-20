@@ -114,32 +114,6 @@ public class DashboardController implements Initializable  {
     }
   }
 
-  FadeTransition messageTransition = null;
-
-  public void displayMessage(String message) {
-    if (messageBar != null) {
-      if (messageTransition != null) {
-        messageTransition.stop();
-      } else {
-        messageTransition = new FadeTransition(Duration.millis(2000), messageBar);
-        messageTransition.setFromValue(1.0);
-        messageTransition.setToValue(0.0);
-        messageTransition.setDelay(Duration.millis(1000));
-        messageTransition.setOnFinished(new EventHandler<ActionEvent>() {
-
-          @Override
-          public void handle(ActionEvent event) {
-            messageBar.setVisible(false);
-          }
-        });
-      }
-      messageBar.setText(message);
-      messageBar.setVisible(true);
-      messageBar.setOpacity(1.0);
-      messageTransition.playFromStart();
-    }
-  }
-
   // An observable list of project names obtained from the model.
   // This is a live list, and we will react to its changes by removing
   // and adding project names to/from our list widget.
@@ -200,7 +174,7 @@ public class DashboardController implements Initializable  {
             // Then we need to remove it - but outside of the for loop
             // to avoid ConcurrentModificationExceptions.
             for (Metric t : table.getItems()) {
-              if (t.metricName.equals(p)) {
+              if (t.getMetricName().equals(p)) {
                 removed = t;
                 break;
               }
@@ -228,7 +202,6 @@ public class DashboardController implements Initializable  {
   // This listener listen to changes in the table widget selection and
   // update the DeleteIssue button state accordingly.
   private final ListChangeListener<Metric> tableSelectionChanged = new ListChangeListener<Metric>() {
-
     @Override
     public void onChanged(Change<? extends Metric> c) {
       updateMetricStreamChart();
@@ -284,7 +257,7 @@ public class DashboardController implements Initializable  {
   // Configure the table widget: set up its column, and register the
   // selection changed listener.
   private void configureMetricStreamTable() {
-    colMetricName.setCellValueFactory(new PropertyValueFactory<Metric, String>("id"));
+    colMetricName.setCellValueFactory(new PropertyValueFactory<Metric, String>("metricName"));
     colUnits.setCellValueFactory(new PropertyValueFactory<Metric, String>("units"));
     colTags.setCellValueFactory(new PropertyValueFactory<Metric, String>("tags"));
 
@@ -339,6 +312,7 @@ public class DashboardController implements Initializable  {
   // Called when a project is unselected.
   private void deviceUnselected(String oldDeviceName) {
     if (oldDeviceName != null) {
+      logger.info("Unselected device: " + oldDeviceName);
       displayedMetricStreams.removeListener(devicesListener);
       displayedMetricStreams = null;
       table.getSelectionModel().clearSelection();
@@ -349,6 +323,7 @@ public class DashboardController implements Initializable  {
   // Called when a project is selected.
   private void deviceSelected(String newDeviceName) {
     if (newDeviceName != null) {
+      logger.info("Select deviced: " + newDeviceName);
       table.getItems().clear();
       displayedMetricStreams = model.getMetricStreamIds(newDeviceName);
       for (String id : displayedMetricStreams) {
