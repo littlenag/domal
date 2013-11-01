@@ -30,7 +30,7 @@ task listJars << {
   configurations.compile.each { File file -> println file.name }
 }
 
-task copyDeps(type: Copy) << {
+task copyDeps(type: Copy) {
   into "$buildDir/libs"
   from configurations.runtime
 }
