@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+ext {
+  springVersion = "3.2.2.RELEASE"
+  springIntegrationVersion = "2.1.3.RELEASE"
+}
+
+dependencies {
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile group: 'joda-time', name: 'joda-time', version: '2.1'
+    compile group: 'org.springframework', name: 'spring-core', version: springVersion
+    compile group: 'org.springframework', name: 'spring-beans', version: springVersion
+    compile group: 'org.springframework', name: 'spring-context', version: springVersion
+
+    compile group: 'org.springframework.integration', name: 'spring-integration-core', version: springIntegrationVersion
+
+    compile group: 'org.mongodb.morphia', name: 'morphia', version: '0.105'
+    compile group: 'org.mongodb',         name: 'mongo-java-driver', version: '2.11.3'
+
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+repositories {
+    mavenCentral()
+}
+
+task listJars << {
+  configurations.compile.each { File file -> println file.name }
+}
+
+task copyDeps(type: Copy) << {
+  into "$buildDir/libs"
+  from configurations.runtime
+}

@@ -1,4 +1,4 @@
-package com.irksomeideas.domal.model;
+package copper;
 
 import org.joda.time.DateTime;
 
@@ -24,27 +24,41 @@ import org.joda.time.DateTime;
  *  -> some metrics are numeric, other can contain more free-form data
  *
  */
-public class Metric {
-  
-  private String deviceName;       // device that generated this metric
-  private String metricName;       // name of this metric
+public class Observation implements ObservationStream {
+
+  private InstanceId instance;   // instance of copper that this observation is tied to
+  private String host;           // hostname of the device that generated this metric
+  private String witness;        // software that detected this observation
+  private String name;           // name of this observation
+
   private Double value;
   private DateTime timestamp = new DateTime();
   private String units = "%";      // reported units
   private String tags = "rack=2";  // metadata about either the device or the stream itself
   
-  public Metric(String device, String metric, Double value) {
-    this.deviceName = device;
-    this.metricName = metric;
+  public Observation(InstanceId instance, String host, String witness, String name, Double value, DateTime timestamp) {
+    this.instance = instance;
+    this.host = host;
+    this.witness = witness;
+    this.name = name;
     this.value = value;
+    this.timestamp = timestamp;
+  }
+
+  public InstanceId instance() {
+    return instance;
   }
   
-  public String getMetricName() {
-    return metricName;
+  public String host() {
+    return host;
   }
   
-  public String getDeviceName() {
-    return deviceName;
+  public String witness() {
+    return witness;
+  }
+
+  public String name() {
+    return name;
   }
   
   public Double getValue() {
@@ -73,7 +87,6 @@ public class Metric {
   
   @Override
   public String toString() {
-    return deviceName + "/" + metricName + "#" + value;
+    return host + "/" + witness + "/" + name + "#" + value;
   }
-
 }
